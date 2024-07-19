@@ -16,6 +16,7 @@ import { createInvite } from "./routes/trips/create-invite";
 import { createTrip } from "./routes/trips/create-trip";
 import { getTripDetails } from "./routes/trips/get-trip-details";
 import { updateTrip } from "./routes/trips/update-trip";
+import { errorHandler } from "./routes/error-handler";
 
 const app = fastify();
 
@@ -25,6 +26,8 @@ app.setSerializerCompiler(serializerCompiler);
 app.register(cors, {
   origin: "*", // Qualquer endereço front-end pode acessar a minha aplicação
 });
+
+app.setErrorHandler(errorHandler);
 
 app.register(createTrip);
 app.register(updateTrip);
