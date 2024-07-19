@@ -1,16 +1,21 @@
-import fastify from "fastify";
 import cors from "@fastify/cors";
-import { createTrip } from "./routes/create-trip";
+import fastify from "fastify";
 import {
   serializerCompiler,
   validatorCompiler,
 } from "fastify-type-provider-zod";
-import { confirmTrip } from "./routes/confirm-trip";
-import { confirmParticipant } from "./routes/confirm-participant";
-import { createActivity } from "./routes/create-activity";
-import { getActivities } from "./routes/get-activities";
-import { createLink } from "./routes/create-link";
-import { getLinks } from "./routes/get-links";
+import { createActivity } from "./routes/activities/create-activity";
+import { getActivities } from "./routes/activities/get-activities";
+import { createLink } from "./routes/links/create-link";
+import { getLinks } from "./routes/links/get-links";
+import { confirmParticipant } from "./routes/participants/confirm-participant";
+import { getParticipant } from "./routes/participants/get-participant";
+import { getParticipants } from "./routes/participants/get-participants";
+import { confirmTrip } from "./routes/trips/confirm-trip";
+import { createInvite } from "./routes/trips/create-invite";
+import { createTrip } from "./routes/trips/create-trip";
+import { getTripDetails } from "./routes/trips/get-trip-details";
+import { updateTrip } from "./routes/trips/update-trip";
 
 const app = fastify();
 
@@ -22,12 +27,17 @@ app.register(cors, {
 });
 
 app.register(createTrip);
+app.register(updateTrip);
 app.register(confirmTrip);
+app.register(getTripDetails);
 app.register(confirmParticipant);
 app.register(createActivity);
 app.register(getActivities);
 app.register(createLink);
 app.register(getLinks);
+app.register(getParticipants);
+app.register(getParticipant);
+app.register(createInvite);
 
 app.listen({ port: 3333 }).then(() => {
   console.log("Server running");

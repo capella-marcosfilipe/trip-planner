@@ -1,34 +1,43 @@
 import { FastifyInstance } from "fastify";
 import { ZodTypeProvider } from "fastify-type-provider-zod";
-import { dayjs } from "../lib/dayjs";
 import z from "zod";
-import { prisma } from "../lib/prisma";
+import { prisma } from "../../lib/prisma";
 
-export async function getLinks(app: FastifyInstance) {
-  app.withTypeProvider<ZodTypeProvider>().get(
+export async function createLink(app: FastifyInstance) {
+  app.withTypeProvider<ZodTypeProvider>().post(
     "/trips/:tripId/links",
     {
       schema: {
         params: z.object({
           tripId: z.string().uuid(),
         }),
+        body: z.object({
+          title: z.string().min(4),
+          url: z.string().url(),
+        }),
       },
     },
     async (req) => {
       const { tripId } = req.params;
+      const { title, url } = req.body;
 
       const trip = await prisma.trip.findUnique({
         where: { id: tripId },
-        include: {
-          links: true,
-        },
       });
 
       if (!trip) {
         throw new Error("Trip not found");
       }
 
-      return { links: trip.links };
+      const link = await prisma.link.create({
+        data: {
+          title,
+          url,
+          trip_id: tripId,
+        },
+      });
+
+      return { linkId: link.id };
     }
   );
 }
