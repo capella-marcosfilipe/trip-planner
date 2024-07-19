@@ -6,6 +6,7 @@ import { dayjs } from "../../lib/dayjs";
 import { getMailClient } from "../../lib/mail";
 import { prisma } from "../../lib/prisma";
 import { ClientError } from "../../errors/client-error";
+import { env } from "../../env";
 
 export async function createInvite(app: FastifyInstance) {
   app.withTypeProvider<ZodTypeProvider>().post(
@@ -47,7 +48,7 @@ export async function createInvite(app: FastifyInstance) {
 
       // Método all aguarda várias promises terminarem. Vou enviar uma array de promises
       // O map cria uma array e vou criar promises com async
-      const confirmationLink = `https://localhost:3333/participants/${participant.id}/confirm`;
+      const confirmationLink = `${env.API_BASE_URL}/participants/${participant.id}/confirm`;
 
       const message = await mail.sendMail({
         from: {
